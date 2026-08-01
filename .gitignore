@@ -1,0 +1,22 @@
+# Environments
+.venv/
+env/
+.venv/
+*.pyc
+__pycache__/
+
+# Django specific
+*.log
+db.sqlite3
+media/
+
+# Env vars / secrets
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
