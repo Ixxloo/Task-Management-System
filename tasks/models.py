@@ -13,4 +13,4 @@ class Task(models.Model ):
     description =models.TextField(blank=True,null=True)
 
     def __str__(self):
-        return f"{self.title} assigned to {self.assignedTo}, due date is :{self.dueDate}"
+        return f"{self.title} assigned to {self.assignedTo}, due date is :{self.dueDate}" #to return data if the object put into --> print (object) this will be the defult format 
