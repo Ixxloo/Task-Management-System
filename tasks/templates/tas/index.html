@@ -9,16 +9,19 @@
         <a href="{% url 'task_creating' %}" class="btn-add">+ New Task</a>
         
     </div>
-            <form method="GET" class="filter-bar">
+            <form method="GET" class="filter-bar"> <!-- Why method="GET" instead of POST --- GET puts form data directly into the URL as a query string, e.g.:
+                                                        http://127.0.0.1:8000/?status=P         -->
     <label for="status">Filter by status:</label>
-    <select name="status" id="status" onchange="this.form.submit()">
+    <select name="status" id="status" onchange="this.form.submit()"> <!-- This is a tiny inline JavaScript snippet that fires the moment the selected option changes.
+                                                                     this refers to the <select> element, this.form refers to its parent <form>, and .submit() triggers
+                                                                      the form submission programmatically — as if you'd clicked a submit button.-->
         <option value="" {% if status_filter == '' %}selected{% endif %}>All</option>
         <option value="P" {% if status_filter == 'P' %}selected{% endif %}>Pending</option>
         <option value="IN" {% if status_filter == 'IN' %}selected{% endif %}>In Progress</option>
         <option value="C" {% if status_filter == 'C' %}selected{% endif %}>Completed</option>
     </select>
 </form>
-    {% if tasks %}
+   {% if tasks %}
     <table class="task-table">
         <thead>
             <tr>
@@ -31,7 +34,7 @@
         </thead>
         <tbody>
             {% for task in tasks %}
-            <tr>
+            <tr id="task-row-{{ task.pk }}">
                 <td data-label="Task">
                     <span class="task-name-link">{{ task.title }}</span>
                     <span class="task-meta">By {{ task.createdBy }} · Assigned to {{ task.assignedTo }}</span>
@@ -42,7 +45,7 @@
                 <td data-label="Due">
                     <span class="task-date">{{ task.dueDate|date:"M d, Y" }}</span>
                 </td>
-                <td data-label="Status">
+                <td data-label="Status" id="status-cell-{{ task.pk }}">
                     {% if task.status == 'P' %}
                         <span class="status-pill status-pending">Pending</span>
                     {% elif task.status == 'IN' %}
@@ -51,19 +54,39 @@
                         <span class="status-pill status-completed">Completed</span>
                     {% endif %}
                 </td>
-                <td data-label="Actions">
+                <td data-label="Actions" id="actions-cell-{{ task.pk }}">
                     <a href="{% url 'task_updating' task.pk %}" class="btn-edit" title="Edit">✎</a>
                     <a href="{% url 'task_Deleting' task.pk %}" class="btn-delete" title="Delete">✕</a>
+                    {% if task.status != 'C' %}
+                        <a href="{% url 'task_completing' task.pk %}"
+                           class="btn-complete js-mark-complete"
+                           data-url="{% url 'task_completing' task.pk %}"
+                           data-pk="{{ task.pk }}"
+                           title="Mark Complete">✓</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+ 
+    <div class="pagination">
+        {% if tasks.has_previous %}
+            <a href="?page={{ tasks.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">&laquo; Prev</a>
+        {% endif %}
+ 
+        <span class="pagination-current">Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}</span>
+ 
+        {% if tasks.has_next %}
+            <a href="?page={{ tasks.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next &raquo;</a>
+        {% endif %}
+    </div>
+ 
     {% else %}
     <div class="empty-state">
-        <p>No tasks yet — create your first one!</p>
+        <p>No tasks match this filter.</p>
     </div>
     {% endif %}
-
+ 
 </div>
 {% endblock %}

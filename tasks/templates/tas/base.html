@@ -20,6 +20,9 @@
             </div>
         </nav>
 
+        <!-- Hidden CSRF token, used by script.js when sending fetch()/AJAX POST requests -->
+        <form id="csrf-form" style="display:none">{% csrf_token %}</form>
+
         <div class="page-body">
         {% block content %}
             {% endblock %}
