@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from .forms import TaskForm
+from django.core.paginator import Paginator
 
 def Create(request):
     if request.method == "POST":
@@ -14,9 +15,21 @@ def Create(request):
                                                     # here is for looping , if i want to reach the created data
 
 def Read(request):
+    status_filter = request.GET.get('status', '')
+
     reads = Task.objects.all()
-    return render(request, 'tas/index.html', {'tasks': reads})
-                                                    # here is for looping , if i want to reach all data
+    if status_filter:
+        reads = reads.filter(status=status_filter)
+
+    paginator = Paginator(reads, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'tas/index.html', {
+        'tasks': page_obj,      # here is for looping , if i want to reach all data
+        'status_filter': status_filter,
+    })
+                                                    
 
 def Update(request, pk):
     task = get_object_or_404(Task, pk=pk)

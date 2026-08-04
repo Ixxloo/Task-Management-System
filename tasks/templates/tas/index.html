@@ -7,8 +7,17 @@
     <div class="app-header">
         <h1>My Tasks</h1>
         <a href="{% url 'task_creating' %}" class="btn-add">+ New Task</a>
+        
     </div>
-
+            <form method="GET" class="filter-bar">
+    <label for="status">Filter by status:</label>
+    <select name="status" id="status" onchange="this.form.submit()">
+        <option value="" {% if status_filter == '' %}selected{% endif %}>All</option>
+        <option value="P" {% if status_filter == 'P' %}selected{% endif %}>Pending</option>
+        <option value="IN" {% if status_filter == 'IN' %}selected{% endif %}>In Progress</option>
+        <option value="C" {% if status_filter == 'C' %}selected{% endif %}>Completed</option>
+    </select>
+</form>
     {% if tasks %}
     <table class="task-table">
         <thead>
