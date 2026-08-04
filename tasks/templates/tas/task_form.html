@@ -6,7 +6,7 @@
 
     <div class="app-header">
         <h1>{% if form.instance.pk %}Edit Task{% else %}New Task{% endif %}</h1>
-        <a href="{% url 'task_list' %}" class="btn-edit">← Back to list</a>
+        <a href="{% url 'task_list' %}" class="btn-add">← Back to list</a>
     </div>
 
     <form method="POST" class="task-form-vertical" novalidate>

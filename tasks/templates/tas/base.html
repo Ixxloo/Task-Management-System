@@ -3,22 +3,27 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="UTF-8">                              
+        <meta charset="UTF-8">
         <title>
             Tasks-page
         </title>
-            <link rel="stylesheet" href="{% static 'tas/css/bootstrap.css' %}">        
+            <link rel="stylesheet" href="{% static 'tas/css/bootstrap.css' %}">
             <link rel="stylesheet" href="{% static 'tas/css/style.css' %}">
 
     </head>
-    <body style="background-color:#f0e9b6b3;">
-        <div class="container" >
-            <div class="row">
+    <body>
+        <nav class="navbar-custom">
+            <a href="{% url 'task_list' %}" class="navbar-brand">📋 TaskManager</a>
+            <div class="navbar-links">
+                <a href="{% url 'task_list' %}">My Tasks</a>
+                <a href="{% url 'task_creating' %}">+ New Task</a>
+            </div>
+        </nav>
+
+        <div class="page-body">
         {% block content %}
             {% endblock %}
-            </div>
         </div>
-        
 
         <script src="{% static 'tas/js/jquery-4.0.0.min.js' %}"></script>
         <script src="{% static 'tas/js/popper.min.js' %}"></script>
