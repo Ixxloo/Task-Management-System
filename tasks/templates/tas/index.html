@@ -9,8 +9,13 @@
         <a href="{% url 'task_creating' %}" class="btn-add">+ New Task</a>
         
     </div>
-            <form method="GET" class="filter-bar"> <!-- Why method="GET" instead of POST --- GET puts form data directly into the URL as a query string, e.g.:
-                                                        http://127.0.0.1:8000/?status=P         -->
+        <form method="GET" class="filter-bar"> <!-- Why method="GET" instead of POST --- GET puts form data directly into the URL as a query string, e.g.:   http://127.0.0.1:8000/?status=P         -->
+         <input type="text"
+               name="q"
+               placeholder="Search by title..."
+               value="{{ search_query }}"
+               class="search-input">          
+
     <label for="status">Filter by status:</label>
     <select name="status" id="status" onchange="this.form.submit()"> <!-- This is a tiny inline JavaScript snippet that fires the moment the selected option changes.
                                                                      this refers to the <select> element, this.form refers to its parent <form>, and .submit() triggers
@@ -20,8 +25,14 @@
         <option value="IN" {% if status_filter == 'IN' %}selected{% endif %}>In Progress</option>
         <option value="C" {% if status_filter == 'C' %}selected{% endif %}>Completed</option>
     </select>
+        <button type="submit" class="btn-search">Search</button>
+
+    {% if search_query or status_filter %}
+        <a href="{% url 'task_list' %}" class="btn-clear">Clear</a>
+    {% endif %}
 </form>
 {% if tasks %}
+<div class="table-responsive">
     <table class="task-table">
         <thead>
             <tr>
@@ -70,7 +81,7 @@
             {% endfor %}
         </tbody>
     </table>
- 
+ </div>
     <div class="pagination">
         {% if tasks.has_previous %}
             <a href="?page={{ tasks.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">&laquo; Prev</a>

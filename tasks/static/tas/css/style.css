@@ -166,6 +166,7 @@ body {
 /* ---------- Filter bar ---------- */
 .filter-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     margin-bottom: 18px;
@@ -185,6 +186,52 @@ body {
     color: var(--text-on-light);
     font-size: 0.9rem;
     cursor: pointer;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 140px;
+    padding: 8px 12px;
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius);
+    background-color: var(--color-light);
+    color: var(--text-on-light);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.search-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(83, 98, 158, 0.2);
+}
+
+.btn-search {
+    background-color: var(--color-primary);
+    color: var(--text-on-dark);
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition);
+}
+
+.btn-search:hover {
+    background-color: #46538a;
+}
+
+.btn-clear {
+    color: #a13a3a;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.btn-clear:hover {
+    text-decoration: underline;
 }
 
 /* ---------- Mark-complete button ---------- */
@@ -226,8 +273,16 @@ body {
 }
 
 /* ---------- Task table ---------- */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .task-table {
     width: 100%;
+    min-width: 640px;
+    table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0 10px;
 }
@@ -276,6 +331,8 @@ body {
     color: var(--color-dark);
     text-decoration: none;
     transition: color var(--transition);
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .task-name-link:hover {
@@ -289,6 +346,36 @@ body {
     color: var(--color-primary);
     margin-top: 2px;
     font-weight: 400;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* Column width proportions (table-layout: fixed makes these take effect) */
+.task-table th:nth-child(1),
+.task-table td:nth-child(1) {
+    width: 60px;
+}
+
+.task-table th:nth-child(2),
+.task-table td:nth-child(2) {
+    width: 34%;
+}
+
+.task-table th:nth-child(3),
+.task-table td:nth-child(3),
+.task-table th:nth-child(4),
+.task-table td:nth-child(4) {
+    width: 14%;
+}
+
+.task-table th:nth-child(5),
+.task-table td:nth-child(5) {
+    width: 16%;
+}
+
+.task-table th:nth-child(6),
+.task-table td:nth-child(6) {
+    width: 100px;
 }
 
 /* Date columns */
@@ -458,6 +545,25 @@ body {
 @media (max-width: 640px) {
     .container {
         padding: 20px 16px;
+    }
+
+    .app-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .table-responsive {
+        overflow-x: visible;
+    }
+
+    .task-table {
+        min-width: 0;
+        table-layout: auto;
+    }
+
+    .task-table th:nth-child(n),
+    .task-table td:nth-child(n) {
+        width: auto;
     }
 
     .task-table thead {

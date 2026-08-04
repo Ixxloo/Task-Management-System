@@ -19,9 +19,14 @@ def Create(request):
 
 def Read(request):
     status_filter = request.GET.get('status', '')   # reads ?status=P from the URL, defaults to '' (no filter)
+    search_query = request.GET.get('q', '').strip()  # reads ?q=... from the URL, defaults to '' (no search)
 
     reads = Task.objects.all()
-    if status_filter:                                # only filter if the user actually picked something
+
+    if search_query:
+        reads = reads.filter(title__icontains=search_query)
+
+    if status_filter:
         reads = reads.filter(status=status_filter)
 
     paginator = Paginator(reads, 5)                  # split results into pages of 5 tasks each
@@ -31,6 +36,7 @@ def Read(request):
     return render(request, 'tas/index.html', {
         'tasks': page_obj,
         'status_filter': status_filter,
+        'search_query': search_query,
     })
                                                     # here is for looping , if i want to reach all data
 
@@ -58,7 +64,6 @@ def ToggleComplete(request, pk):
     task = get_object_or_404(Task, pk=pk)
 
     if request.method == "POST":
-        # The checkbox's checked state is sent from JS as the string 'true' or 'false'.
         completed = request.POST.get('completed') == 'true'
         task.status = 'C' if completed else 'P'
         task.save()
@@ -72,5 +77,4 @@ def ToggleComplete(request, pk):
             'status_label': STATUS_LABELS.get(task.status, task.status),
         })
 
-    # Fallback for non-JS browsers
     return redirect('task_list')
