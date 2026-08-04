@@ -21,10 +21,11 @@
         <option value="C" {% if status_filter == 'C' %}selected{% endif %}>Completed</option>
     </select>
 </form>
-   {% if tasks %}
+{% if tasks %}
     <table class="task-table">
         <thead>
             <tr>
+                <th>Done</th>
                 <th>Task</th>
                 <th>Created Date</th>
                 <th>Due Date</th>
@@ -34,7 +35,14 @@
         </thead>
         <tbody>
             {% for task in tasks %}
-            <tr id="task-row-{{ task.pk }}">
+            <tr id="task-row-{{ task.pk }}" class="{% if task.status == 'C' %}completed{% endif %}">
+                <td data-label="Done">
+                    <input type="checkbox"
+                           class="task-checkbox js-toggle-complete"
+                           data-url="{% url 'task_toggle' task.pk %}"
+                           data-pk="{{ task.pk }}"
+                           {% if task.status == 'C' %}checked{% endif %}>
+                </td>
                 <td data-label="Task">
                     <span class="task-name-link">{{ task.title }}</span>
                     <span class="task-meta">By {{ task.createdBy }} · Assigned to {{ task.assignedTo }}</span>
@@ -54,16 +62,9 @@
                         <span class="status-pill status-completed">Completed</span>
                     {% endif %}
                 </td>
-                <td data-label="Actions" id="actions-cell-{{ task.pk }}">
+                <td data-label="Actions">
                     <a href="{% url 'task_updating' task.pk %}" class="btn-edit" title="Edit">✎</a>
                     <a href="{% url 'task_Deleting' task.pk %}" class="btn-delete" title="Delete">✕</a>
-                    {% if task.status != 'C' %}
-                        <a href="{% url 'task_completing' task.pk %}"
-                           class="btn-complete js-mark-complete"
-                           data-url="{% url 'task_completing' task.pk %}"
-                           data-pk="{{ task.pk }}"
-                           title="Mark Complete">✓</a>
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

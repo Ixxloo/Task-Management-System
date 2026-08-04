@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from .models import Task
 from .forms import TaskForm
 
+STATUS_LABELS = {'P': 'Pending', 'IN': 'In Progress', 'C': 'Completed'}
+
 def Create(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
@@ -52,21 +54,23 @@ def Delete(request, pk):
     return render(request, 'tas/task_confirm_delete.html', {'task': task})
 
 
-def MarkComplete(request, pk):
+def ToggleComplete(request, pk):
     task = get_object_or_404(Task, pk=pk)
-    task.status = 'C'
-    task.save()
 
-    # If this request came from our JavaScript fetch() call, respond with JSON
-    # instead of redirecting, so the page doesn't reload.
+    if request.method == "POST":
+        # The checkbox's checked state is sent from JS as the string 'true' or 'false'.
+        completed = request.POST.get('completed') == 'true'
+        task.status = 'C' if completed else 'P'
+        task.save()
+
     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
     if is_ajax:
         return JsonResponse({
             'success': True,
             'pk': task.pk,
             'status_code': task.status,
-            'status_label': 'Completed',
+            'status_label': STATUS_LABELS.get(task.status, task.status),
         })
 
-    # Fallback for non-JS / JS-disabled browsers: behave like before.
+    # Fallback for non-JS browsers
     return redirect('task_list')

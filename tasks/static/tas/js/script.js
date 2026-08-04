@@ -1,37 +1,39 @@
 // ---------------------------------------------------------------------
-// Mark Task as Completed — via AJAX (no page reload)
+// Toggle Task Completed — via AJAX (no page reload)
 // ---------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Grabs the CSRF token Django put in the hidden form in base.html.
-    // Django requires this on every POST request, or it rejects it as 403 Forbidden.
     function getCsrfToken() {
         var csrfInput = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]');
         return csrfInput ? csrfInput.value : '';
     }
 
-    // Event delegation: instead of attaching a click listener to every single
-    // "mark complete" button (there could be many, and new ones could appear
-    // after pagination), we attach ONE listener to the whole document and
-    // check if the clicked element matches what we care about.
-    document.addEventListener('click', function (event) {
-        var button = event.target.closest('.js-mark-complete');
-        if (!button) {
-            return; // click was on something else entirely, ignore it
+    // Event delegation on 'change' (checkboxes fire 'change', not 'click', when toggled)
+    document.addEventListener('change', function (event) {
+        var checkbox = event.target.closest('.js-toggle-complete');
+        if (!checkbox) {
+            return; // change event came from something else, ignore it
         }
 
-        event.preventDefault(); // stop the browser from following the link's href (no reload)
+        var url = checkbox.dataset.url;
+        var pk = checkbox.dataset.pk;
+        var isChecked = checkbox.checked; // true if the box was just checked, false if unchecked
 
-        var url = button.dataset.url;   // e.g. "/complete/7"
-        var pk = button.dataset.pk;     // e.g. "7"
+        var formData = new FormData();
+        formData.append('completed', isChecked ? 'true' : 'false');
+
+        // Disable while the request is in flight, so rapid double-clicks can't
+        // fire two overlapping requests for the same task
+        checkbox.disabled = true;
 
         fetch(url, {
             method: 'POST',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest',   // tells Django this is an AJAX call
-                'X-CSRFToken': getCsrfToken(),           // Django's CSRF protection requires this header on POST
-            }
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: formData,
         })
         .then(function (response) {
             if (!response.ok) {
@@ -44,19 +46,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Update the Status cell for this specific row
             var statusCell = document.getElementById('status-cell-' + pk);
+            var row = document.getElementById('task-row-' + pk);
+
             if (statusCell) {
+                var pillClass = data.status_code === 'C' ? 'status-completed' : 'status-pending';
                 statusCell.innerHTML =
-                    '<span class="status-pill status-completed">' + data.status_label + '</span>';
+                    '<span class="status-pill ' + pillClass + '">' + data.status_label + '</span>';
             }
 
-            // Remove the "mark complete" checkmark button — task is done, no need to show it anymore
-            button.remove();
+            if (row) {
+                row.classList.toggle('completed', data.status_code === 'C');
+            }
         })
         .catch(function (error) {
-            console.error('Failed to mark task complete:', error);
+            console.error('Failed to update task status:', error);
             alert('Something went wrong — please try again.');
+            checkbox.checked = !isChecked; // revert the visual checkbox state since the save failed
+        })
+        .finally(function () {
+            checkbox.disabled = false;
         });
     });
 
