@@ -1,0 +1,60 @@
+{% extends "tas/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+    <div class="app-header">
+        <h1>My Tasks</h1>
+        <a href="{% url 'task_creating' %}" class="btn-add">+ New Task</a>
+    </div>
+
+    {% if tasks %}
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Created Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td data-label="Task">
+                    <span class="task-name-link">{{ task.title }}</span>
+                    <span class="task-meta">By {{ task.createdBy }} · Assigned to {{ task.assignedTo }}</span>
+                </td>
+                <td data-label="Created">
+                    <span class="task-date">{{ task.createdDate|date:"M d, Y" }}</span>
+                </td>
+                <td data-label="Due">
+                    <span class="task-date">{{ task.dueDate|date:"M d, Y" }}</span>
+                </td>
+                <td data-label="Status">
+                    {% if task.status == 'P' %}
+                        <span class="status-pill status-pending">Pending</span>
+                    {% elif task.status == 'IN' %}
+                        <span class="status-pill status-in-progress">In Progress</span>
+                    {% elif task.status == 'C' %}
+                        <span class="status-pill status-completed">Completed</span>
+                    {% endif %}
+                </td>
+                <td data-label="Actions">
+                    <a href="{% url 'task_updating' task.pk %}" class="btn-edit" title="Edit">✎</a>
+                    <a href="{% url 'task_Deleting' task.pk %}" class="btn-delete" title="Delete">✕</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>No tasks yet — create your first one!</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

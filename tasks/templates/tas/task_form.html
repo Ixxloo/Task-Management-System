@@ -1,0 +1,37 @@
+{% extends "tas/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+    <div class="app-header">
+        <h1>{% if form.instance.pk %}Edit Task{% else %}New Task{% endif %}</h1>
+        <a href="{% url 'task_list' %}" class="btn-edit">← Back to list</a>
+    </div>
+
+    <form method="POST" class="task-form-vertical" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+                <span class="field-help">{{ field.help_text }}</span>
+            {% endif %}
+            {% for error in field.errors %}
+                <span class="field-error">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-add">
+                {% if form.instance.pk %}Save Changes{% else %}Create Task{% endif %}
+            </button>
+            <a href="{% url 'task_list' %}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

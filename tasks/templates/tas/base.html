@@ -1,0 +1,28 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">                              
+        <title>
+            Tasks-page
+        </title>
+            <link rel="stylesheet" href="{% static 'tas/css/bootstrap.css' %}">        
+            <link rel="stylesheet" href="{% static 'tas/css/style.css' %}">
+
+    </head>
+    <body style="background-color:#f0e9b6b3;">
+        <div class="container" >
+            <div class="row">
+        {% block content %}
+            {% endblock %}
+            </div>
+        </div>
+        
+
+        <script src="{% static 'tas/js/jquery-4.0.0.min.js' %}"></script>
+        <script src="{% static 'tas/js/popper.min.js' %}"></script>
+        <script src="{% static 'tas/js/bootstrap.js' %}"></script>
+        <script src="{% static 'tas/js/script.js' %}"></script>
+  </body>
+</html>

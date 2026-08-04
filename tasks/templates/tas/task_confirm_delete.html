@@ -1,0 +1,26 @@
+{% extends "tas/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+    <div class="app-header">
+        <h1>Delete Task</h1>
+    </div>
+
+    <div class="confirm-delete-box">
+        <p>Are you sure you want to delete the task:</p>
+        <p class="confirm-task-title">"{{ task.title }}"</p>
+        <p class="confirm-warning">This action cannot be undone.</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn-danger">Yes, Delete</button>
+                <a href="{% url 'task_list' %}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

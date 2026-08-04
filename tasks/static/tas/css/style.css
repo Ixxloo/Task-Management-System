@@ -1,0 +1,445 @@
+/* ==========================================================================
+   To-Do Task App — Table Layout Stylesheet
+   Palette:
+   --dark    : #473472  (deep purple)
+   --primary : #53629E  (blue-purple)
+   --accent  : #87BAC3  (teal-blue)
+   --light   : #D6F4ED  (pale mint)
+   ========================================================================== */
+
+:root {
+    --color-dark: #473472;
+    --color-primary: #53629E;
+    --color-accent: #87BAC3;
+    --color-light: #D6F4ED;
+
+    --text-on-dark: #F5F3FA;
+    --text-on-light: #2E2547;
+
+    --radius: 10px;
+    --shadow-sm: 0 2px 6px rgba(71, 52, 114, 0.15);
+    --shadow-md: 0 6px 18px rgba(71, 52, 114, 0.25);
+    --transition: 0.2s ease;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(160deg, var(--color-light) 0%, #eef9f6 100%);
+    color: var(--text-on-light);
+    padding: 40px 16px;
+}
+
+/* ---------- Page wrapper ---------- */
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 32px 28px;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-dark);
+}
+
+.btn-add {
+    background-color: var(--color-dark);
+    color: var(--text-on-dark);
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition), transform var(--transition);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-add:hover {
+    background-color: #5a4290;
+}
+
+/* ---------- Delete confirmation ---------- */
+.confirm-delete-box {
+    background-color: var(--color-light);
+    border-left: 5px solid #d9534f;
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 480px;
+}
+
+.confirm-task-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-dark);
+    margin: 8px 0;
+}
+
+.confirm-warning {
+    font-size: 0.85rem;
+    color: #a13a3a;
+    margin-bottom: 18px;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition);
+}
+
+.btn-danger:hover {
+    background-color: #b8443f;
+}
+
+/* ---------- Filter bar ---------- */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.filter-bar label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-dark);
+}
+
+.filter-bar select {
+    padding: 8px 12px;
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius);
+    background-color: var(--color-light);
+    color: var(--text-on-light);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* ---------- Mark-complete button ---------- */
+.btn-complete {
+    background-color: transparent;
+    color: #1f7a5c;
+    padding: 6px 10px;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.btn-complete:hover {
+    color: #145c44;
+}
+
+/* ---------- Pagination ---------- */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.pagination a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}
+
+.pagination-current {
+    font-size: 0.85rem;
+    color: var(--text-on-light);
+}
+
+/* ---------- Task table ---------- */
+.task-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.task-table thead th {
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    padding: 0 16px 8px;
+    font-weight: 700;
+}
+
+.task-table tbody tr {
+    background-color: var(--color-light);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.task-table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.task-table tbody td {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    color: var(--text-on-light);
+    vertical-align: middle;
+}
+
+.task-table tbody tr td:first-child {
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+    border-left: 5px solid var(--color-accent);
+}
+
+.task-table tbody tr td:last-child {
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+}
+
+/* Task name — clickable link to description page */
+.task-name-link {
+    font-weight: 600;
+    color: var(--color-dark);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.task-name-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.task-meta {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+/* Date columns */
+.task-date {
+    font-size: 0.9rem;
+    color: #5b5b6e;
+    white-space: nowrap;
+}
+
+.task-date.overdue {
+    color: #c0392b;
+    font-weight: 600;
+}
+
+/* Status pill (the oval in your sketch) */
+.status-pill {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 90px;
+}
+
+.status-pending {
+    background-color: #FDECC8;
+    color: #8a6100;
+}
+
+.status-in-progress {
+    background-color: #D9E4F5;
+    color: var(--color-primary);
+}
+
+.status-completed {
+    background-color: #DFF6EE;
+    color: #1f7a5c;
+}
+
+.status-overdue {
+    background-color: #FBE4E4;
+    color: #a13a3a;
+}
+
+/* Checkbox column */
+.task-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--color-primary);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color var(--transition), border-color var(--transition);
+}
+
+.task-checkbox:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.task-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Completed row style */
+.task-table tbody tr.completed td .task-name-link {
+    text-decoration: line-through;
+    color: #8b8b9a;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+    text-align: center;
+    padding: 50px 10px;
+    color: var(--color-primary);
+}
+
+/* ---------- Task form (Create / Update) ---------- */
+.task-form-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 480px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-dark);
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="datetime-local"],
+.form-group textarea,
+.form-group select {
+    padding: 10px 12px;
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-on-light);
+    background-color: var(--color-light);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(83, 98, 158, 0.2);
+}
+
+.field-help {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+}
+
+.field-error {
+    font-size: 0.8rem;
+    color: #c0392b;
+    font-weight: 600;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-cancel {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.btn-cancel:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Responsive: collapse to cards on small screens ---------- */
+@media (max-width: 640px) {
+    .container {
+        padding: 20px 16px;
+    }
+
+    .task-table thead {
+        display: none;
+    }
+
+    .task-table, .task-table tbody, .task-table tbody tr, .task-table tbody td {
+        display: block;
+        width: 100%;
+    }
+
+    .task-table tbody tr {
+        margin-bottom: 12px;
+        padding: 10px 4px;
+        border-radius: var(--radius);
+    }
+
+    .task-table tbody td {
+        border-left: none !important;
+        padding: 6px 12px;
+    }
+
+    .task-table tbody td::before {
+        content: attr(data-label);
+        display: inline-block;
+        min-width: 90px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        text-transform: uppercase;
+    }
+}

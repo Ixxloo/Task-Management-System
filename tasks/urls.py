@@ -5,5 +5,5 @@ urlpatterns=[
     path('create/',views.Create,name='task_creating'),
     path('update/<int:pk>',views.Update,name='task_updating'),
     path('delete/<int:pk>',views.Delete,name='task_Deleting'),
-
+        # url name, ,, FUNCTION NAME IN VIEW, alias to give
 ]

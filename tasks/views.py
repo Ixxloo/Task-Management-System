@@ -16,7 +16,7 @@ def Create(request):
 def Read(request):
     reads = Task.objects.all()
     return render(request, 'tas/index.html', {'tasks': reads})
-                                                    # here is for looping , if i want to reach the data
+                                                    # here is for looping , if i want to reach all data
 
 def Update(request, pk):
     task = get_object_or_404(Task, pk=pk)
