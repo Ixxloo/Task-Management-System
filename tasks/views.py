@@ -1,25 +1,40 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 from .models import Task
 from .forms import TaskForm
 
 STATUS_LABELS = {'P': 'Pending', 'IN': 'In Progress', 'C': 'Completed'}
 
+DEFAULT_CREATOR_USERNAME = 'maham'   # <-- change this to whichever username should always be "the creator"
+
+
+def _is_ajax(request):
+    return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+
+def _get_default_creator():
+    # Always returns the same fixed user, no matter who's browsing the site.
+    return User.objects.filter(username=DEFAULT_CREATOR_USERNAME).first()
+
+
 def Create(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
-            form.save()
+            task = form.save(commit=False)      # build the Task object, don't save yet
+            task.createdBy = _get_default_creator()   # always the same fixed user
+            task.save()
             return redirect('task_list')
     else:
         form = TaskForm()
     return render(request, 'tas/task_form.html', {'form': form})
-                                                    # here is for looping , if i want to reach the created data
+
 
 def Read(request):
-    status_filter = request.GET.get('status', '')   # reads ?status=P from the URL, defaults to '' (no filter)
-    search_query = request.GET.get('q', '').strip()  # reads ?q=... from the URL, defaults to '' (no search)
+    status_filter = request.GET.get('status', '')
+    search_query = request.GET.get('q', '').strip()
 
     reads = Task.objects.all()
 
@@ -29,16 +44,21 @@ def Read(request):
     if status_filter:
         reads = reads.filter(status=status_filter)
 
-    paginator = Paginator(reads, 5)                  # split results into pages of 5 tasks each
-    page_number = request.GET.get('page')            # reads ?page=2 from the URL
-    page_obj = paginator.get_page(page_number)        # gives back only that page's tasks (safe against bad input)
+    paginator = Paginator(reads, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    return render(request, 'tas/index.html', {
+    context = {
         'tasks': page_obj,
         'status_filter': status_filter,
         'search_query': search_query,
-    })
-                                                    # here is for looping , if i want to reach all data
+    }
+
+    if _is_ajax(request):
+        return render(request, 'tas/_task_table.html', context)
+
+    return render(request, 'tas/index.html', context)
+
 
 def Update(request, pk):
     task = get_object_or_404(Task, pk=pk)
@@ -68,8 +88,7 @@ def ToggleComplete(request, pk):
         task.status = 'C' if completed else 'P'
         task.save()
 
-    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
-    if is_ajax:
+    if _is_ajax(request):
         return JsonResponse({
             'success': True,
             'pk': task.pk,

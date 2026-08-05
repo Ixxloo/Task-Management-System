@@ -1,0 +1,69 @@
+{% if tasks %}
+<div class="table-responsive">
+<table class="task-table">
+    <thead>
+        <tr>
+            <th>Done</th>
+            <th>Task</th>
+            <th>Created Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr id="task-row-{{ task.pk }}" class="{% if task.status == 'C' %}completed{% endif %}">
+            <td data-label="Done">
+                <input type="checkbox"
+                       class="task-checkbox js-toggle-complete"
+                       data-url="{% url 'task_toggle' task.pk %}"
+                       data-pk="{{ task.pk }}"
+                       {% if task.status == 'C' %}checked{% endif %}>
+            </td>
+            <td data-label="Task">
+                <span class="task-name-link">{{ task.title }}</span>
+                <span class="task-meta">By {{ task.createdBy }} · Assigned to {{ task.assignedTo }}</span>
+            </td>
+            <td data-label="Created">
+                <span class="task-date">{{ task.createdDate|date:"M d, Y" }}</span>
+            </td>
+            <td data-label="Due">
+                <span class="task-date">{{ task.dueDate|date:"M d, Y" }}</span>
+            </td>
+            <td data-label="Status" id="status-cell-{{ task.pk }}">
+                {% if task.status == 'P' %}
+                    <span class="status-pill status-pending">Pending</span>
+                {% elif task.status == 'IN' %}
+                    <span class="status-pill status-in-progress">In Progress</span>
+                {% elif task.status == 'C' %}
+                    <span class="status-pill status-completed">Completed</span>
+                {% endif %}
+            </td>
+            <td data-label="Actions">
+                <a href="{% url 'task_updating' task.pk %}" class="btn-edit" title="Edit">✎</a>
+                <a href="{% url 'task_Deleting' task.pk %}" class="btn-delete" title="Delete">✕</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<div class="pagination">
+    {% if tasks.has_previous %}
+        <a href="?page={{ tasks.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="js-page-link">&laquo; Prev</a>
+    {% endif %}
+
+    <span class="pagination-current">Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}</span>
+
+    {% if tasks.has_next %}
+        <a href="?page={{ tasks.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="js-page-link">Next &raquo;</a>
+    {% endif %}
+</div>
+
+{% else %}
+<div class="empty-state">
+    <p>No tasks match your search{% if status_filter %} / filter{% endif %}.</p>
+</div>
+{% endif %}
